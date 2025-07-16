@@ -1,9 +1,9 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { Volleyball, Search, ShoppingCart } from "lucide-react";
+import { Volleyball, Search, ShoppingCart, User } from "lucide-react";
 import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
 import Navigation from "@/Pages/View/components/navigation";
-import { Home, Produk } from "@/lib/types";
+import { Home } from "@/lib/types";
 import { useState, useEffect } from "react";
 import { ShoppingCard } from "../components/shopping-cart";
 
@@ -64,7 +64,12 @@ export default function HomePage({
                     <h1 className="text-3xl text-black flex gap-2 font-extrabold items-center">
                         <Volleyball size={30}></Volleyball> 70 Sport
                     </h1>
-                    <ShoppingCard />
+                    <div className="flex gap-3 items-center">
+                        <ShoppingCard />
+                        <a href="/admin/login" target="_blank">
+                            <User className="hover:text-[#A6FF00]" />
+                        </a>
+                    </div>
                 </div>
                 <div className="relative flex items-center justify-center mt-5">
                     <Input
