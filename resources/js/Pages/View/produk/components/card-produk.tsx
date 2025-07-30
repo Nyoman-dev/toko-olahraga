@@ -1,6 +1,9 @@
 import { Link } from "@inertiajs/react";
 import { Produk, Foto } from "@/lib/types";
 import { useState } from "react";
+import { Button } from "@/Components/ui/button";
+import { ShoppingCart } from "lucide-react";
+import { Toaster, toast } from "sonner";
 
 const harga = (harga: number) => {
     return new Intl.NumberFormat("id-ID", {
@@ -11,8 +14,34 @@ const harga = (harga: number) => {
 
 export default function CardProduk({ produk }: { produk: Produk }) {
     const [currentThumbnail, setCurrentThumbnail] = useState(produk.thumbnail);
+
+    const addToCart = (product: Produk) => {
+        const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+        const alreadyAdded = existingCart.some(
+            (item: Produk) => item.id === product.id
+        );
+
+        if (alreadyAdded) {
+            toast.warning("Produk sudah ada di keranjang!");
+            return;
+        }
+
+        const newItem = {
+            id: product.id,
+            thumbnail: product.thumbnail,
+            nama_produk: product.nama_produk,
+            slug: product.slug,
+        };
+
+        const updatedCart = [...existingCart, newItem];
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+        toast.success("Produk berhasil ditambahkan ke keranjang!");
+    };
     return (
         <>
+            <Toaster position="top-right" />
             <div className="mt-5">
                 <img
                     src={`/storage/${currentThumbnail}`}
@@ -22,7 +51,7 @@ export default function CardProduk({ produk }: { produk: Produk }) {
                 <div className="flex justify-evenly mt-2">
                     {produk.fotos.map((item: Foto) => (
                         <img
-                            className="detail bg-white h-20 w-20 rounded-xl border-2 border-transparent hover:border-[#A6FF00] transition-colors duration-300"
+                            className="detail object-cover bg-white h-20 w-20 rounded-xl border-2 border-transparent hover:border-[#A6FF00] transition-colors duration-300"
                             key={item.id}
                             src={`/storage/${item.foto}`}
                             alt={item.foto}
@@ -49,12 +78,21 @@ export default function CardProduk({ produk }: { produk: Produk }) {
                     <p className="text-white mx-7 text-lg">
                         ({harga(produk.harga)})
                     </p>
-                    <Link
-                        href={`/order/${produk.slug}`}
-                        className="bg-[#A6FF00] text-[#1E1E1E] rounded-full py-2 px-4"
-                    >
-                        Beli Sekarang
-                    </Link>
+                    <div className="flex items-center gap-3">
+                        <Link
+                            href={`/order/${produk.slug}`}
+                            className="bg-[#A6FF00] text-[#1E1E1E] rounded-full py-2 px-4"
+                        >
+                            Checkout
+                        </Link>
+                        <Button
+                            onClick={() => addToCart(produk)}
+                            variant={"ghost"}
+                            className="text-[#A6FF00] rounded-full"
+                        >
+                            <ShoppingCart />
+                        </Button>
+                    </div>
                 </div>
             </div>
         </>

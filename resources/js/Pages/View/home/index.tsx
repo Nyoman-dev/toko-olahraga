@@ -1,10 +1,9 @@
 import { Head, Link, router } from "@inertiajs/react";
 import { Volleyball, Search, ShoppingCart, User } from "lucide-react";
 import { Input } from "@/Components/ui/input";
-import { Button } from "@/Components/ui/button";
 import Navigation from "@/Pages/View/components/navigation";
 import { Home } from "@/lib/types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ShoppingCard } from "../components/shopping-cart";
 
 export default function HomePage({
@@ -17,22 +16,6 @@ export default function HomePage({
     cari: Home[];
 }) {
     const [search, setSearch] = useState("");
-    const [cartProducts, setCartProducts] = useState<Home[]>([]);
-
-    useEffect(() => {
-        const storedCart = localStorage.getItem("cartProducts");
-        if (storedCart) {
-            try {
-                setCartProducts(JSON.parse(storedCart));
-            } catch {
-                setCartProducts([]);
-            }
-        }
-    }, []);
-    // Sync cartProducts state to localStorage on each change
-    useEffect(() => {
-        localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-    }, [cartProducts]);
 
     const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -45,15 +28,6 @@ export default function HomePage({
                 preserveScroll: true,
             }
         );
-    };
-    const addToCart = (product: Home) => {
-        setCartProducts((prev) => {
-            // Avoid duplicate products by ID, optionally you can increase quantity
-            if (prev.find((p) => p.produk_id === product.produk_id)) {
-                return prev;
-            }
-            return [...prev, product];
-        });
     };
 
     return (
@@ -142,7 +116,7 @@ export default function HomePage({
                         <h2 className="text-lg font-bold">Produk Terkini</h2>
                     </div>
                     <div
-                        className="card-scroll flex gap-2 overflow-x-scroll"
+                        className="card-scroll flex gap-2 overflow-x-scroll scroll-smooth"
                         style={{
                             scrollSnapType: "x mandatory",
                             WebkitOverflowScrolling: "touch",
@@ -157,73 +131,32 @@ export default function HomePage({
                                 display: none;
                             }
                         `}</style>
-                        {produk.length === 0 ? (
-                            <div className="bg-white p-3 w-fit rounded-3xl ">
-                                <div className="bg-black rounded-3xl w-48 h-60"></div>
-                                <div className=" text-sm mt-3 w-fit p-2">
+                        {produk.map((item, index) => (
+                            <Link
+                                key={`${item.id_produk}-${index}`}
+                                href={`/produk/${item.slug_produk}`}
+                                className="flex flex-col justify-between bg-white p-3 min-w-[200px] rounded-3xl border-2 border-transparent hover:border-[#A6FF00] transition-colors duration-300"
+                            >
+                                <img
+                                    src={`/storage/${item.thumbnail}`}
+                                    alt={item.nama_produk}
+                                    className="rounded-3xl w-48 h-50"
+                                />
+                                <div className=" text-sm mt-2 w-fit p-2">
                                     <p className="font-semibold">
-                                        Nike Zoom Sd 4
+                                        {item.nama_produk}
                                     </p>
-                                    <p className="text-sm">Rp 1.000.000</p>
+                                    <p className="text-sm font-semibold pt-2">
+                                        Rp {item.harga}
+                                    </p>
                                 </div>
-                                <p className="text-slate-400 text-sm px-2">
-                                    (25 stoks)
-                                </p>
-                            </div>
-                        ) : (
-                            produk.map((item) => {
-                                const isInCart = cartProducts.some(
-                                    (p) => p.produk_id === item.produk_id
-                                );
-                                return (
-                                    <Link
-                                        key={item.produk_id}
-                                        href={`/produk/${item.slug_produk}`}
-                                        className="bg-white p-3 w-fit rounded-3xl border-2 border-transparent hover:border-[#A6FF00] transition-colors duration-300"
-                                    >
-                                        <img
-                                            src={`/storage/${item.thumbnail}`}
-                                            alt={item.nama_produk}
-                                            className="rounded-3xl w-48 h-50"
-                                        />
-                                        <div className=" text-sm mt-2 w-fit p-2">
-                                            <p className="font-semibold">
-                                                {item.nama_produk}
-                                            </p>
-                                            <p className="text-sm font-semibold pt-2">
-                                                Rp {item.harga}
-                                            </p>
-                                        </div>
-                                        <div className="flex justify-between items-baseline ">
-                                            <p className="text-slate-400 text-xs px-2">
-                                                (Stoks {item.stok})
-                                            </p>
-                                            <Button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    e.preventDefault();
-                                                    if (!isInCart)
-                                                        addToCart(item);
-                                                }}
-                                                variant={
-                                                    isInCart
-                                                        ? "destructive"
-                                                        : "outline"
-                                                }
-                                                disabled={isInCart}
-                                                className={`z-10 ${
-                                                    isInCart
-                                                        ? "bg-red-600 text-white cursor-not-allowed hover:bg-red-600"
-                                                        : "hover:bg-[#A6FF00]"
-                                                }`}
-                                            >
-                                                <ShoppingCart />
-                                            </Button>
-                                        </div>
-                                    </Link>
-                                );
-                            })
-                        )}
+                                <div className="flex justify-between items-baseline ">
+                                    <p className="text-slate-400 text-xs px-2">
+                                        (Stoks {item.stok})
+                                    </p>
+                                </div>
+                            </Link>
+                        ))}
                     </div>
                 </div>
                 <Navigation></Navigation>

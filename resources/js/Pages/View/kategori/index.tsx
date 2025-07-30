@@ -89,7 +89,7 @@ export default function KategoriIndex({
                                     <img
                                         src={`/storage/${item.thumbnail}`}
                                         alt={item.nama_produk}
-                                        className="w-24 h-24 rounded-xl"
+                                        className="w-24 h-24 rounded-xl object-center object-cover"
                                     />
                                     <div className="p-3">
                                         <h3 className="text-base font-semibold">

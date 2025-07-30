@@ -19,27 +19,25 @@ import { Link } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 
 type Produk = {
-    id_produk: number;
+    id: number;
     nama_produk: string;
     thumbnail: string;
-    slug_produk: string;
+    slug: string;
 };
 
 export function ShoppingCard() {
     const [cartProducts, setCartProducts] = useState<Produk[]>([]);
     useEffect(() => {
-        const storedCartProducts = localStorage.getItem("cartProducts");
+        const storedCartProducts = localStorage.getItem("cart");
         if (storedCartProducts) {
             setCartProducts(JSON.parse(storedCartProducts));
         }
     }, []);
 
     const handleRemove = (id: number) => {
-        const updatedCart = cartProducts.filter(
-            (product) => product.id_produk !== id
-        );
+        const updatedCart = cartProducts.filter((product) => product.id !== id);
         setCartProducts(updatedCart);
-        localStorage.setItem("cartProducts", JSON.stringify(updatedCart));
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
     };
 
     return (
@@ -75,15 +73,15 @@ export function ShoppingCard() {
                         `}</style>
                             {cartProducts.map((product) => (
                                 <Link
-                                    key={product.id_produk}
-                                    href={`/produk/${product.slug_produk}`}
+                                    key={product.id}
+                                    href={`/produk/${product.slug}`}
                                     className="flex items-center px-3 rounded-xl bg-white border border-[#A6FF00] hover:bg-[#A6FF00] transition-colors duration-300"
                                 >
                                     <div className="flex justify-between items-center w-full">
                                         <img
                                             src={`/storage/${product.thumbnail}`}
                                             alt={product.nama_produk}
-                                            className="w-10 h-10 rounded-xl"
+                                            className="w-10 h-10 rounded-xl object-cover"
                                         />
                                         <div className="p-3">
                                             <h3 className="text-base font-semibold">
@@ -95,7 +93,7 @@ export function ShoppingCard() {
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 e.preventDefault();
-                                                handleRemove(product.id_produk);
+                                                handleRemove(product.id);
                                             }}
                                         >
                                             Hapus
