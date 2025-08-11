@@ -45,7 +45,7 @@ export default function StatusOrderIndex(order_id: Props) {
     return (
         <>
             <Head title="Status Order" />
-            <div className="container pt-10 px-10 font-[Poppins] pb-28 h-dvh bg-gray-200 md:w-2/4 mx-auto">
+            <div className="container pt-10 px-10 font-[Poppins] pb-28 h-screen pb-10 bg-gray-200 md:w-2/4 mx-auto">
                 <div className="grid grid-cols-3">
                     <Link href="/" className="bg-white w-fit p-2 rounded-full">
                         <ArrowLeft></ArrowLeft>
@@ -54,7 +54,7 @@ export default function StatusOrderIndex(order_id: Props) {
                         Status Order
                     </h1>
                 </div>
-                <div className="bg-white rounded-xl p-5 mt-32">
+                <div className="bg-white rounded-xl p-5 mt-10">
                     <div className="flex flex-col items-center justify-center">
                         <div className="bg-[#A6FF00] h-32 w-32 rounded-full flex items-center justify-center">
                             <Boxes className="w-12 h-12" />
@@ -78,7 +78,7 @@ export default function StatusOrderIndex(order_id: Props) {
                             onChange={(e) => setOrderId(e.target.value)}
                         />
                     </div>
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-center justify-center mb-32">
                         <Button
                             onClick={handleSearch}
                             className="px-10 py-3 bg-[#A6FF00] mt-5 rounded-full text-[#1E1E1E] font-semibold"
