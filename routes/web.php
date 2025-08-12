@@ -1,12 +1,9 @@
 <?php
 
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\View\HomeController;
-use App\Http\Middleware\AuthenticateCustomer;
 use App\Http\Controllers\View\OrderController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/kategori/{slug_kategori}', [HomeController::class, 'showKategori']);
@@ -17,6 +14,13 @@ Route::post('/pembayaran', [OrderController::class, 'checkout']);
 Route::get('/status-order', [OrderController::class, 'viewStatusOrder'])->name('view.order');
 Route::post('/status-order', [OrderController::class, 'statusOrder']);
 Route::get('/status-pembayaran', [OrderController::class, 'statusPembayaran'])->name('status.pembayaran');
+
+Route::get('/transaksi/export', [ExportController::class, 'export'])->name('transaksis.export');
+
+Route::get('/export', function () {
+  return view('exports.transaksi');
+});
+
 // Route::get('/pembayaran', [OrderController::class, 'pembayaran']);
 // Route::get('/status-pembayaran', [OrderController::class, 'statusPembayaran'])->name('status.pembayaran');
 

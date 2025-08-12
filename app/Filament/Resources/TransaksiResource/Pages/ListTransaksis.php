@@ -13,6 +13,10 @@ class ListTransaksis extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('export')
+                ->url(fn() => url('/transaksi/export?' . http_build_query([
+                    'tableFilters' => $this->tableFilters,
+                ]))),
             Actions\CreateAction::make(),
         ];
     }
