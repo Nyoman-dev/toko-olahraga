@@ -45,7 +45,7 @@ export default function StatusOrderIndex(order_id: Props) {
     return (
         <>
             <Head title="Status Order" />
-            <div className="container pt-10 px-10 font-[Poppins] pb-28 h-screen pb-10 bg-gray-200 md:w-2/4 mx-auto">
+            <div className="container pt-10 px-10 font-[Poppins] pb-28 h-screen bg-gray-200 md:w-2/4 mx-auto">
                 <div className="grid grid-cols-3">
                     <Link href="/" className="bg-white w-fit p-2 rounded-full">
                         <ArrowLeft></ArrowLeft>

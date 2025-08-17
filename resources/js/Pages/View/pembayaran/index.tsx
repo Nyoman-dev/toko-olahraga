@@ -98,6 +98,10 @@ export default function PembayaranIndex({
                                             )}
                                         </p>
                                     </div>
+                                    <div className="flex justify-between font-semibold">
+                                        <p>Hubungi Kurir Kami</p>
+                                        <p>+6282192443658</p>
+                                    </div>
                                 </div>
                             </AccordionContent>
                         </AccordionItem>
