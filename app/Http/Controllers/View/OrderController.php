@@ -61,13 +61,10 @@ class OrderController extends Controller
         $transaksi->booking_trx_id = $bookingTrxId;
         $transaksi->save();
 
-        session(['order_id' => $bookingTrxId]);
-        return redirect()->route(
-            'view.order',
-            [
-                'order_id' => $bookingTrxId
-            ]
-        );
+        // session(['order_id' => $bookingTrxId]);
+        return Inertia::render('View/status-order/index', [
+            'order_id' => $bookingTrxId
+        ]);
     }
 
     public function viewStatusOrder()

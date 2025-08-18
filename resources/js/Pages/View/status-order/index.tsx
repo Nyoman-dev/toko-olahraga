@@ -1,27 +1,64 @@
 import { Head, Link } from "@inertiajs/react";
 import { Boxes, ArrowLeft } from "lucide-react";
-import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { Button } from "@/Components/ui/button";
 import Navigation from "../components/navigation";
 import { useState, useEffect } from "react";
-import { toast, Toaster } from "sonner";
-import { router, usePage } from "@inertiajs/react";
+import { toast } from "sonner";
+import { router } from "@inertiajs/react";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/Components/ui/select";
 
 type Props = {
     order_id: string;
 };
 export default function StatusOrderIndex(order_id: Props) {
-    const [orderId, setOrderId] = useState<string>(order_id.order_id);
+    const [selectedOrderId, setSelectedOrderId] = useState<string>("");
+    const [orderIds, setOrderIds] = useState<string[]>([]);
+
+    useEffect(() => {
+        const storedOrders = JSON.parse(
+            localStorage.getItem("orderIds") || "[]"
+        );
+
+        // Kalau datanya object inertia lama → ambil hanya order_id
+        let extractedIds: string[] = [];
+
+        if (Array.isArray(storedOrders)) {
+            extractedIds = storedOrders
+                .map((o: any) => {
+                    if (typeof o === "string") return o; // format baru
+                    if (typeof o === "object" && o?.order_id) return o.order_id; // format lama
+                    return null;
+                })
+                .filter((id: any) => id); // buang null/undefined
+        }
+
+        if (order_id?.order_id && !extractedIds.includes(order_id.order_id)) {
+            const newOrderIds = [order_id.order_id, ...extractedIds];
+            localStorage.setItem("orderIds", JSON.stringify(newOrderIds));
+            setOrderIds(newOrderIds);
+        } else {
+            setOrderIds(extractedIds);
+        }
+    }, [order_id]);
 
     const handleSearch = () => {
-        if (!orderId.trim()) {
-            toast.error("Order ID harus diisi");
+        if (!selectedOrderId.trim()) {
+            toast.error("Nomor Order Id harus diisi");
             return;
         }
+
         router.post(
             "/status-order",
-            { order_id: orderId },
+            { order_id: selectedOrderId },
             {
                 preserveScroll: true,
                 onStart: () =>
@@ -29,14 +66,13 @@ export default function StatusOrderIndex(order_id: Props) {
                 onSuccess: () => {
                     toast.dismiss("insert-data");
                     toast.success("Order ditemukan");
-                    setOrderId("");
                 },
                 onError: (error) => {
                     toast.dismiss("insert-data");
                     if (error?.message) {
                         toast.error(error.message);
                     } else {
-                        toast.error("Insert gagal");
+                        toast.error("Pencarian gagal");
                     }
                 },
             }
@@ -70,13 +106,30 @@ export default function StatusOrderIndex(order_id: Props) {
                         >
                             Nomor Order Id
                         </Label>
-                        <Input
-                            className="bg-white py-8 active:border-[#A6FF00] focus:border-[#A6FF00] focus:ring-[#A6FF00] mt-2"
-                            id="order_id"
-                            placeholder="Brg-0001"
-                            value={orderId}
-                            onChange={(e) => setOrderId(e.target.value)}
-                        />
+                        <Select
+                            onValueChange={(value) => setSelectedOrderId(value)}
+                            value={selectedOrderId}
+                        >
+                            <SelectTrigger className="bg-white mt-2 active:border-[#A6FF00] focus:border-[#A6FF00] focus:ring-[#A6FF00]">
+                                <SelectValue placeholder="Order Id" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Order ID</SelectLabel>
+                                    {orderIds.length === 0 ? (
+                                        <SelectItem value="-" disabled>
+                                            Belum ada Order ID
+                                        </SelectItem>
+                                    ) : (
+                                        orderIds.map((id, index) => (
+                                            <SelectItem key={index} value={id}>
+                                                {id}
+                                            </SelectItem>
+                                        ))
+                                    )}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="flex items-center justify-center mb-32">
                         <Button
