@@ -35,4 +35,54 @@ class Transaksi extends Model
     {
         return $this->belongsTo(Produk::class, 'produk_id');
     }
+
+    /**
+     * Event untuk mengelola stok otomatis
+     */
+    protected static function booted(): void
+    {
+        // Jika transaksi baru dibuat
+        static::created(function (Transaksi $transaksi) {
+            if ($transaksi->status == 1) {
+                $transaksi->prosesMutasi('created');
+            }
+        });
+
+        // Jika transaksi diupdate
+        static::updating(function (Transaksi $transaksi) {
+            $originalStatus = $transaksi->getOriginal('status');
+
+            // Jika awalnya bukan sukses, tapi sekarang sukses
+            if ($originalStatus != 1 && $transaksi->status == 1) {
+                $transaksi->prosesMutasi('status updated');
+            }
+
+            // Opsional: rollback stok jika status dibatalkan (misal dari 1 ke 0)
+            if ($originalStatus == 1 && $transaksi->status != 1) {
+                $transaksi->rollbackMutasi('status dibatalkan');
+            }
+        });
+    }
+
+    /**
+     * Proses mutasi keluar untuk stok produk
+     */
+    public function prosesMutasi(string $note = '')
+    {
+        Mutasi::create([
+            'produk_id'  => $this->produk_id,
+            'jenis'      => 'keluar',
+            'deskripsi'  => "Transaksi #{$this->id} {$note}",
+            'jumlah'     => $this->jumlah_produk,
+        ]);
+    }
+    public function rollbackMutasi(string $note = '')
+    {
+        Mutasi::create([
+            'produk_id'  => $this->produk_id,
+            'jumlah'     => $this->jumlah_produk,
+            'jenis'      => 'masuk',
+            'deskripsi' => "Transaksi #{$this->id} {$note}",
+        ]);
+    }
 }

@@ -53,10 +53,10 @@ export default function FormOrder({
             toast.error("Nama harus diisi");
             return;
         }
-        if (!email.trim()) {
-            toast.error("Email harus diisi");
-            return;
-        }
+        // if (!email.trim()) {
+        //     toast.error("Email harus diisi");
+        //     return;
+        // }
         if (!telepon.trim()) {
             toast.error("No Hp harus diisi");
             return;
@@ -75,7 +75,7 @@ export default function FormOrder({
         }
         const formData = new FormData();
         formData.append("nama", nama);
-        formData.append("email", email);
+        // formData.append("email", email);
         formData.append("telepon", telepon);
         formData.append("alamat", alamat);
         formData.append("ukuran_produk", selectedUkuran);
@@ -134,7 +134,7 @@ export default function FormOrder({
                         onChange={(e) => setNama(e.target.value)}
                     />
                 </div>
-                <div>
+                {/* <div>
                     <Label
                         className="text-[#1E1E1E] font-semibold"
                         htmlFor="email"
@@ -148,7 +148,7 @@ export default function FormOrder({
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                </div>
+                </div> */}
                 <div>
                     <Label
                         className="text-[#1E1E1E] font-semibold"

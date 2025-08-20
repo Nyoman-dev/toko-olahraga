@@ -27,7 +27,7 @@ class OrderController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            // 'email' => 'required|email|max:255',
             'telepon' => 'required|string|max:20',
             'alamat' => 'required|string|max:500',
             'ukuran_produk' => 'required|integer',
@@ -48,7 +48,7 @@ class OrderController extends Controller
         }
         $transaksi = new Transaksi();
         $transaksi->nama = $request->input('nama');
-        $transaksi->email = $request->input('email');
+        $transaksi->email = 'example@gmail.com';
         $transaksi->telepon = $request->input('telepon');
         $transaksi->alamat = $request->input('alamat');
         $transaksi->ukuran_produk = $request->input('ukuran_produk');
@@ -61,7 +61,6 @@ class OrderController extends Controller
         $transaksi->booking_trx_id = $bookingTrxId;
         $transaksi->save();
 
-        // session(['order_id' => $bookingTrxId]);
         return Inertia::render('View/status-order/index', [
             'order_id' => $bookingTrxId
         ]);
