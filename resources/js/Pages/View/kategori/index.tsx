@@ -13,7 +13,7 @@ export default function KategoriIndex({
     return (
         <>
             <Head title="kategori" />
-            <div className="container h-dvh pt-10 px-10 font-[Poppins] pb-28 bg-gray-200 md:w-2/4 mx-auto">
+            <div className="container pt-10 px-10 font-[Poppins] pb-28 bg-gray-200 md:w-2/4 mx-auto">
                 <div className="grid grid-cols-3">
                     <Link href="/" className="bg-white w-fit p-2 rounded-full">
                         <ArrowLeft></ArrowLeft>
