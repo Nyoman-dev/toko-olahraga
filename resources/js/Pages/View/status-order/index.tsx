@@ -19,62 +19,34 @@ import {
 type Props = {
     order_id: string;
 };
-export default function StatusOrderIndex(order_id: Props) {
+
+export default function StatusOrderIndex({ order_id }: Props) {
     const [selectedOrderId, setSelectedOrderId] = useState<string>("");
     const [orderIds, setOrderIds] = useState<string[]>([]);
 
+    // 🔹 Simpan order_id dari props ke localStorage
     useEffect(() => {
-        const storedOrders = JSON.parse(
-            localStorage.getItem("orderIds") || "[]"
-        );
+        if (order_id) {
+            const stored = JSON.parse(localStorage.getItem("orderIds") || "[]");
 
-        let extractedIds: string[] = [];
+            let updatedIds: string[] = [];
+            if (Array.isArray(stored)) {
+                updatedIds = stored;
+            }
 
-        if (Array.isArray(storedOrders)) {
-            extractedIds = storedOrders
-                .map((o: any) => {
-                    if (typeof o === "string") return o; // format baru
-                    if (typeof o === "object" && o?.order_id) return o.order_id; // format lama
-                    return null;
-                })
-                .filter((id: any) => id);
-        }
+            // pastikan tidak duplikat
+            if (!updatedIds.includes(order_id)) {
+                updatedIds = [order_id, ...updatedIds];
+                localStorage.setItem("orderIds", JSON.stringify(updatedIds));
+            }
 
-        // Tambahkan order_id baru jika ada
-        let updatedIds = [...extractedIds];
-        if (order_id?.order_id && !updatedIds.includes(order_id.order_id)) {
-            updatedIds = [order_id.order_id, ...updatedIds];
-        }
-
-        // 🔍 Validasi ke server
-        if (updatedIds.length > 0) {
-            fetch("/check-order-ids", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN":
-                        (
-                            document.querySelector(
-                                'meta[name="csrf-token"]'
-                            ) as HTMLMetaElement
-                        )?.content || "",
-                },
-                body: JSON.stringify({ order_ids: updatedIds }),
-            })
-                .then((res) => res.json())
-                .then((validIds: string[]) => {
-                    // Hanya simpan yang valid
-                    localStorage.setItem("orderIds", JSON.stringify(validIds));
-                    setOrderIds(validIds);
-                })
-                .catch((err) => {
-                    console.error("Gagal cek order id:", err);
-                    // fallback: tetap pakai updatedIds
-                    setOrderIds(updatedIds);
-                });
+            setOrderIds(updatedIds);
         } else {
-            localStorage.setItem("orderIds", JSON.stringify([]));
-            setOrderIds([]);
+            // kalau tidak ada order_id dari props, tetap load data dari localStorage
+            const stored = JSON.parse(localStorage.getItem("orderIds") || "[]");
+            if (Array.isArray(stored)) {
+                setOrderIds(stored);
+            }
         }
     }, [order_id]);
 
@@ -106,13 +78,14 @@ export default function StatusOrderIndex(order_id: Props) {
             }
         );
     };
+
     return (
         <>
             <Head title="Status Order" />
             <div className="container pt-10 px-10 font-[Poppins] pb-28 h-screen bg-gray-200 md:w-2/4 mx-auto">
                 <div className="grid grid-cols-3">
                     <Link href="/" className="bg-white w-fit p-2 rounded-full">
-                        <ArrowLeft></ArrowLeft>
+                        <ArrowLeft />
                     </Link>
                     <h1 className=" mx-auto text-xl text-[#1E1E1E] flex gap-2 font-extrabold items-center">
                         Status Order
@@ -168,7 +141,7 @@ export default function StatusOrderIndex(order_id: Props) {
                         </Button>
                     </div>
                 </div>
-                <Navigation></Navigation>
+                <Navigation />
             </div>
         </>
     );

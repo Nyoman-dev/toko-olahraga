@@ -1,5 +1,6 @@
 export type Home = {
     id_produk: number;
+    produk_id: number;
     nama_produk: string;
     thumbnail: string;
     harga: number;
