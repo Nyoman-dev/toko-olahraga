@@ -17,7 +17,7 @@ class ListTransaksis extends ListRecords
                 ->url(fn() => url('/transaksi/export?' . http_build_query([
                     'tableFilters' => $this->tableFilters,
                 ]))),
-            Actions\CreateAction::make(),
+            // Actions\CreateAction::make(),
         ];
     }
 }

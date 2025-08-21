@@ -13,6 +13,7 @@ Route::get('/order/{slug_produk}', [OrderController::class, 'index']);
 Route::post('/pembayaran', [OrderController::class, 'checkout']);
 Route::get('/status-order', [OrderController::class, 'viewStatusOrder'])->name('view.order');
 Route::post('/status-order', [OrderController::class, 'statusOrder']);
+Route::post('/check-order-ids', [OrderController::class, 'checkOrderId']);
 Route::get('/status-pembayaran', [OrderController::class, 'statusPembayaran'])->name('status.pembayaran');
 
 Route::get('/transaksi/export', [ExportController::class, 'export'])->name('transaksis.export');

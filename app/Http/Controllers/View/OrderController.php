@@ -41,10 +41,9 @@ class OrderController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        // Tangani upload file bukti pembayaran
         $proofPath = null;
         if ($request->hasFile('proof')) {
-            $proofPath = $request->file('proof')->store('public');
+            $proofPath = $request->file('proof')->store('proof', 'public');
         }
         $transaksi = new Transaksi();
         $transaksi->nama = $request->input('nama');
@@ -91,5 +90,16 @@ class OrderController extends Controller
     public function statusPembayaran()
     {
         return Inertia::render('View/pembayaran/index');
+    }
+
+    public function checkOrderId(Request $request)
+    {
+        $ids = $request->input('order_ids', []);
+
+        $validIds = Transaksi::whereIn('booking_trx_id', $ids)
+            ->pluck('booking_trx_id')
+            ->toArray();
+
+        return response()->json($validIds);
     }
 }

@@ -28,7 +28,6 @@ export default function StatusOrderIndex(order_id: Props) {
             localStorage.getItem("orderIds") || "[]"
         );
 
-        // Kalau datanya object inertia lama → ambil hanya order_id
         let extractedIds: string[] = [];
 
         if (Array.isArray(storedOrders)) {
@@ -38,15 +37,44 @@ export default function StatusOrderIndex(order_id: Props) {
                     if (typeof o === "object" && o?.order_id) return o.order_id; // format lama
                     return null;
                 })
-                .filter((id: any) => id); // buang null/undefined
+                .filter((id: any) => id);
         }
 
-        if (order_id?.order_id && !extractedIds.includes(order_id.order_id)) {
-            const newOrderIds = [order_id.order_id, ...extractedIds];
-            localStorage.setItem("orderIds", JSON.stringify(newOrderIds));
-            setOrderIds(newOrderIds);
+        // Tambahkan order_id baru jika ada
+        let updatedIds = [...extractedIds];
+        if (order_id?.order_id && !updatedIds.includes(order_id.order_id)) {
+            updatedIds = [order_id.order_id, ...updatedIds];
+        }
+
+        // 🔍 Validasi ke server
+        if (updatedIds.length > 0) {
+            fetch("/check-order-ids", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN":
+                        (
+                            document.querySelector(
+                                'meta[name="csrf-token"]'
+                            ) as HTMLMetaElement
+                        )?.content || "",
+                },
+                body: JSON.stringify({ order_ids: updatedIds }),
+            })
+                .then((res) => res.json())
+                .then((validIds: string[]) => {
+                    // Hanya simpan yang valid
+                    localStorage.setItem("orderIds", JSON.stringify(validIds));
+                    setOrderIds(validIds);
+                })
+                .catch((err) => {
+                    console.error("Gagal cek order id:", err);
+                    // fallback: tetap pakai updatedIds
+                    setOrderIds(updatedIds);
+                });
         } else {
-            setOrderIds(extractedIds);
+            localStorage.setItem("orderIds", JSON.stringify([]));
+            setOrderIds([]);
         }
     }, [order_id]);
 

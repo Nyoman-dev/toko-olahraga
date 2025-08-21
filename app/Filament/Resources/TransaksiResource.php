@@ -91,10 +91,10 @@ class TransaksiResource extends Resource
                                 Forms\Components\TextInput::make('nama')
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('email')
-                                    ->email()
-                                    ->required()
-                                    ->maxLength(255),
+                                // Forms\Components\TextInput::make('email')
+                                //     ->email()
+                                //     ->required()
+                                //     ->maxLength(255),
                                 Forms\Components\TextInput::make('telepon')
                                     ->required()
                                     ->maxLength(255),
@@ -120,6 +120,8 @@ class TransaksiResource extends Resource
                                 ->required(),
                             Forms\Components\FileUpload::make('proof')
                                 ->image()
+                                ->disk('public')
+                                ->previewable(true)
                                 ->label('Bukti Pembayaran')
                                 ->required(),
                         ])

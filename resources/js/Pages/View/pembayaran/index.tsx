@@ -133,13 +133,13 @@ export default function PembayaranIndex({
                                             <p>{status.telepon}</p>
                                         </div>
                                     </div>
-                                    <div className="flex gap-5 items-center">
+                                    {/* <div className="flex gap-5 items-center">
                                         <Mail />
                                         <div>
                                             <p>Email</p>
                                             <p>{status.email}</p>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="flex gap-5 items-center">
                                         <House />
                                         <div>
