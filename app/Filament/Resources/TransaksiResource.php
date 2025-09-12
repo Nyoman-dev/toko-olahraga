@@ -149,6 +149,7 @@ class TransaksiResource extends Resource
                     ->falseIcon('heroicon-o-x-circle')
                     ->label('Status'),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('produk_id')
                     ->label('Produk')

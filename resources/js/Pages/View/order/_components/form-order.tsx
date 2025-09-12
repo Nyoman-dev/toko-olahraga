@@ -160,9 +160,15 @@ export default function FormOrder({
                         className="active:border-[#A6FF00] focus:border-[#A6FF00] focus:ring-[#A6FF00] mt-2"
                         id="email"
                         placeholder="+62 xxxx xxxx xxxx"
-                        type="number"
+                        type="text" // ganti jadi text agar maxLength bisa jalan
+                        inputMode="numeric" // supaya tetap muncul keyboard angka di mobile
+                        maxLength={13} // batasi 13 karakter
                         value={telepon}
-                        onChange={(e) => setTelepon(e.target.value)}
+                        onChange={(e) => {
+                            // Hanya izinkan angka
+                            const value = e.target.value.replace(/\D/g, "");
+                            setTelepon(value);
+                        }}
                     />
                 </div>
                 <div>

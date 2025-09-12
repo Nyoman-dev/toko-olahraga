@@ -19,6 +19,7 @@ class HomeController extends Controller
             ->get();
         $produk = Produk::select('id as id_produk', 'slug as slug_produk', 'nama_produk', 'thumbnail', 'harga', 'kategori_id', 'stok',)
             ->where('popular', 1)
+            ->orderBy('created_at', 'desc')
             ->get();
         $search = Produk::select('id as id_produk', 'slug as slug_produk', 'nama_produk', 'thumbnail', 'harga', 'kategori_id', 'stok',)
             ->whereRaw('LOWER(nama_produk) like ?', ['%' . $searchTerm . '%'])
@@ -38,6 +39,7 @@ class HomeController extends Controller
             ->get();
         $produk = Produk::select('id as produk_id', 'slug as slug_produk', 'nama_produk', 'thumbnail', 'kategori_id', 'stok',)
             ->where('kategori_id', $kategori[0]->kategori_id)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return Inertia::render('View/kategori/index', [
