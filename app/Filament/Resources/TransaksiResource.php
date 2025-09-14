@@ -137,7 +137,7 @@ class TransaksiResource extends Resource
         return $table
             ->defaultSort('id', 'desc')
             ->columns([
-                Tables\Columns\ImageColumn::make('email'),
+                Tables\Columns\ImageColumn::make('email')->label('Gambar'),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('booking_trx_id')

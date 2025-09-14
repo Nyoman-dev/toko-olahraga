@@ -39,12 +39,20 @@ export default function PembayaranIndex({
                             <AccordionContent>
                                 <div className="flex items-center gap-3">
                                     <img
-                                        src={`/storage/${status.produk.thumbnail}`}
+                                        src={`/storage/${status.email}`}
                                         alt={status.produk.nama_produk}
                                         className="bg-white h-24 w-24 rounded-lg object-cover"
                                     />
                                     <p className="font-semibold text-lg">
-                                        {status.produk.nama_produk}
+                                        {status.email
+                                            .replace(/\.[^.]+$/, "") // hapus ekstensi file (setelah titik terakhir)
+                                            .split("-") // pisahkan dengan "-"
+                                            .map(
+                                                (w) =>
+                                                    w.charAt(0).toUpperCase() +
+                                                    w.slice(1)
+                                            ) // kapital huruf pertama
+                                            .join("-")}
                                     </p>
                                 </div>
                                 <div className="mt-5 px-3 flex flex-col gap-3 font-semibold">
