@@ -135,8 +135,9 @@ class TransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
-                Tables\Columns\ImageColumn::make('produk.thumbnail'),
+                Tables\Columns\ImageColumn::make('email'),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('booking_trx_id')

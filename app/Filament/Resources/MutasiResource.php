@@ -24,7 +24,7 @@ class MutasiResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('produk_id')
-                    ->relationship('produk', 'nama_produk')
+                    ->relationship('produk', 'nama_produk', fn(Builder $query) => $query->orderBy('id', 'desc'))
                     ->searchable()
                     ->preload()
                     ->required(),
@@ -55,6 +55,7 @@ class MutasiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('produk.nama_produk'),
                 Tables\Columns\TextColumn::make('jenis'),

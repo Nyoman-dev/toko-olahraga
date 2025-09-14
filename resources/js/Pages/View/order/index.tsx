@@ -4,7 +4,13 @@ import { Produk } from "@/lib/types";
 import FormOrder from "./_components/form-order";
 import convertToRupiah from "@/utils/helpers";
 
-export default function OrderIndex({ produk }: { produk: Produk }) {
+type Props = {
+    produk: Produk;
+    image: string;
+    slug: string;
+};
+
+export default function OrderIndex({ produk, image, slug }: Props) {
     return (
         <>
             <Head title="Order" />
@@ -22,20 +28,24 @@ export default function OrderIndex({ produk }: { produk: Produk }) {
                 </div>
                 <div className="mt-5">
                     <img
-                        src={`/storage/${produk.thumbnail}`}
+                        src={`/storage/${image}`}
                         alt={produk.nama_produk}
                         className="bg-white w-full h-60 rounded-2xl object-contain"
                     />
                     <div className="mt-5 bg-white rounded-lg p-4">
                         <div className="flex justify-between border-b border-gray-300 pb-3">
                             <p className="font-semibold text-lg text-[#1E1E1E]">
-                                {produk.nama_produk}
+                                {slug}
                             </p>
                             <p className="font-semibold text-[#1E1E1E]">
                                 {convertToRupiah(produk.harga)}
                             </p>
                         </div>
-                        <FormOrder size={produk.sizes} produk={produk} />
+                        <FormOrder
+                            size={produk.sizes}
+                            produk={produk}
+                            image={image}
+                        />
                     </div>
                 </div>
             </div>

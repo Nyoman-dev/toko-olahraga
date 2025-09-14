@@ -37,11 +37,15 @@ class ProdukResource extends Resource
                             ->prefix('IDR'),
                         Forms\Components\FileUpload::make('thumbnail')
                             ->image()
+                            ->disk('public')
+                            ->preserveFilenames()
                             ->required(),
                         Forms\Components\Repeater::make('fotos')
                             ->relationship('fotos')
                             ->schema([
                                 Forms\Components\FileUpload::make('foto')
+                                    ->disk('public')
+                                    ->preserveFilenames()
                                     ->required(),
                             ]),
                         Forms\Components\Repeater::make('sizes')
@@ -73,6 +77,7 @@ class ProdukResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('nama_produk')
                     ->searchable(),

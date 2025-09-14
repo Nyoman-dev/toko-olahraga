@@ -80,7 +80,7 @@ export default function CardProduk({ produk }: { produk: Produk }) {
                     </p>
                     <div className="flex items-center gap-3">
                         <Link
-                            href={`/order/${produk.slug}`}
+                            href={`/order/${produk.slug}&${currentThumbnail}`}
                             className="bg-[#A6FF00] text-[#1E1E1E] rounded-full py-2 px-4"
                         >
                             Checkout

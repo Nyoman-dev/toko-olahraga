@@ -18,37 +18,37 @@ import {
 
 type Props = {
     order_id: string;
+    id_transaksi: string;
 };
 
-export default function StatusOrderIndex({ order_id }: Props) {
+export default function StatusOrderIndex({ order_id, id_transaksi }: Props) {
     const [selectedOrderId, setSelectedOrderId] = useState<string>("");
     const [orderIds, setOrderIds] = useState<string[]>([]);
 
-    // 🔹 Simpan order_id dari props ke localStorage
     useEffect(() => {
-        if (order_id) {
-            const stored = JSON.parse(localStorage.getItem("orderIds") || "[]");
+        // Ambil orderIds yang ada di localStorage
+        let stored = JSON.parse(localStorage.getItem("orderIds") || "[]");
+        if (!Array.isArray(stored)) stored = [];
 
-            let updatedIds: string[] = [];
-            if (Array.isArray(stored)) {
-                updatedIds = stored;
-            }
+        // Ambil daftar id valid dari id_transaksi (array of object)
+        const validIds = Array.isArray(id_transaksi)
+            ? id_transaksi.map((trx) => trx.booking_trx_id)
+            : [];
 
-            // pastikan tidak duplikat
-            if (!updatedIds.includes(order_id)) {
-                updatedIds = [order_id, ...updatedIds];
-                localStorage.setItem("orderIds", JSON.stringify(updatedIds));
-            }
+        // Filter hanya order_id yang valid
+        let filtered = stored.filter((id: string) => validIds.includes(id));
 
-            setOrderIds(updatedIds);
-        } else {
-            // kalau tidak ada order_id dari props, tetap load data dari localStorage
-            const stored = JSON.parse(localStorage.getItem("orderIds") || "[]");
-            if (Array.isArray(stored)) {
-                setOrderIds(stored);
-            }
+        // Jika ada order_id baru dari props dan belum ada, tambahkan
+        if (order_id && !filtered.includes(order_id)) {
+            filtered.unshift(order_id);
         }
-    }, [order_id]);
+
+        // Simpan kembali ke localStorage
+        localStorage.setItem("orderIds", JSON.stringify(filtered));
+
+        // Set ke state
+        setOrderIds(filtered);
+    }, [order_id, id_transaksi]);
 
     const handleSearch = () => {
         if (!selectedOrderId.trim()) {

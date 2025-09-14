@@ -20,9 +20,11 @@ import { toast, Toaster } from "sonner";
 export default function FormOrder({
     size,
     produk,
+    image,
 }: {
     size: Ukuran[];
     produk: Produk;
+    image: string;
 }) {
     const [jumlah, setJumlah] = useState<number>(1);
     const [nama, setNama] = useState<string>("");
@@ -75,7 +77,7 @@ export default function FormOrder({
         }
         const formData = new FormData();
         formData.append("nama", nama);
-        // formData.append("email", email);
+        formData.append("email", image);
         formData.append("telepon", telepon);
         formData.append("alamat", alamat);
         formData.append("ukuran_produk", selectedUkuran);
@@ -162,7 +164,7 @@ export default function FormOrder({
                         placeholder="+62 xxxx xxxx xxxx"
                         type="text" // ganti jadi text agar maxLength bisa jalan
                         inputMode="numeric" // supaya tetap muncul keyboard angka di mobile
-                        maxLength={13} // batasi 13 karakter
+                        maxLength={12} // batasi 13 karakter
                         value={telepon}
                         onChange={(e) => {
                             // Hanya izinkan angka

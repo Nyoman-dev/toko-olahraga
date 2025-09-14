@@ -14,12 +14,21 @@ class OrderController extends Controller
 {
     public function index($slug)
     {
+        $slug = str_replace('&', ' ', $slug);
+        [$nama, $gambar] = explode(' ', $slug, 2);
+        $produk = str_replace('.', ' ', $gambar);
+        [$nama_produk, $extensi] = explode(' ', $produk, 2);
+
+        $namaProduk = ucwords($nama_produk);
+
         $produk = Produk::with('sizes')
-            ->where('slug', $slug)
+            ->where('slug', $nama)
             ->first();
 
         return Inertia::render('View/order/index', [
-            'produk' => $produk
+            'produk' => $produk,
+            'image' => $gambar,
+            'slug' => $namaProduk,
         ]);
     }
 
@@ -47,7 +56,7 @@ class OrderController extends Controller
         }
         $transaksi = new Transaksi();
         $transaksi->nama = $request->input('nama');
-        $transaksi->email = 'example@gmail.com';
+        $transaksi->email = $request->input('email');
         $transaksi->telepon = $request->input('telepon');
         $transaksi->alamat = $request->input('alamat');
         $transaksi->ukuran_produk = $request->input('ukuran_produk');
@@ -60,14 +69,19 @@ class OrderController extends Controller
         $transaksi->booking_trx_id = $bookingTrxId;
         $transaksi->save();
 
+        $orderId = Transaksi::select('booking_trx_id')->get();
         return Inertia::render('View/status-order/index', [
-            'order_id' => $bookingTrxId
+            'order_id' => $bookingTrxId,
+            'id_transaksi' => $orderId
         ]);
     }
 
     public function viewStatusOrder()
     {
-        return Inertia::render('View/status-order/index');
+        $orderId = Transaksi::select('booking_trx_id')->get();
+        return Inertia::render('View/status-order/index', [
+            'id_transaksi' => $orderId
+        ]);
     }
 
     public function statusOrder(Request $request)
