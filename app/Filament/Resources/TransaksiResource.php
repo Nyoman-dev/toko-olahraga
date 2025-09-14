@@ -59,6 +59,12 @@ class TransaksiResource extends Resource
                                             $set('ukuran_produk_options', $sizes);
                                         }
                                     }),
+                                Forms\Components\TextInput::make('email')
+                                    ->label('Jenis Produk')
+                                    ->required()
+                                    ->formatStateUsing(function (string $state): string {
+                                        return preg_replace('/\.[^.]+$/', '', $state);
+                                    }),
                                 Forms\Components\Select::make('ukuran_produk')
                                     ->label('Ukuran')
                                     ->options(function (callable $get) {
